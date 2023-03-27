@@ -122,13 +122,9 @@ public class GeneticAglorithm<T> {
 
 	public float CalculateAverageFitness()
 	{
-		float totalFitness = 0;
-		foreach(DNA<T> dna in Population)
-		{
-			totalFitness+=dna.Fitness;
-		}
+		float averageFitness = 0;
 
-		totalFitness = totalFitness / Population.Count;
-		return totalFitness;	
+		averageFitness = fitnessSum / Population.Count;
+		return averageFitness;	
 	}
 }

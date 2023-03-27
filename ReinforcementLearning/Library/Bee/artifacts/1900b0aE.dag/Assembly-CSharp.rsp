@@ -355,6 +355,7 @@
 "Assets/3rdParty/PathCreator/Examples/Scripts/RoadMeshCreator.cs"
 "Assets/Scripts/AgentManager.cs"
 "Assets/Scripts/AIController.cs"
+"Assets/Scripts/CSVWriter.cs"
 "Assets/Scripts/Driving.cs"
 "Assets/Scripts/GA/DNA.cs"
 "Assets/Scripts/GA/GeneticAglorithm.cs"

@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
+
 
 
 
@@ -95,17 +97,18 @@ public class Driving: MonoBehaviour {
 
 				GetBestLapTime();
 				CollectData();
-				/*
+				
 				if (SolutionReached())
 				{
-					Application.Quit();
-                    UnityEditor.EditorApplication.isPlaying = false;
-                }*/
-				if(ga.Generation > generations)
-				{
+                    //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                     Application.Quit();
                     UnityEditor.EditorApplication.isPlaying = false;
-                }
+                }/*
+				if(ga.Generation > generations)
+				{
+                    //Application.Quit();
+                    //UnityEditor.EditorApplication.isPlaying = false;
+                }*/
 				timer = 0f;
 
 				DeleteAllAgents();
@@ -129,6 +132,7 @@ public class Driving: MonoBehaviour {
 		{
 			Time.timeScale = 0;
 		}
+
 	}
 
 	// all of our genes are float values from 0-1, they act as a percentage of the max valeu
@@ -148,6 +152,9 @@ public class Driving: MonoBehaviour {
 		// get ai controller for the agent
 		AIController ai = agentManager.agents[index].GetComponent<AIController>();
 
+		// for a lap time goal of 10 
+		float defaultTimePerCheckpoint = 10f / (float)CheckPointHolder.transform.childCount;
+
         // increase fit based on checkpoints passed
         float checkPoints = (float)ai.CheckPointsPassedInOrder / (float)CheckPointHolder.transform.childCount;
 
@@ -157,11 +164,11 @@ public class Driving: MonoBehaviour {
 		// give a bonus for completing the track
 		if (ai.CheckPointsPassedInOrder >= CheckPointHolder.transform.childCount)
 		{
-			score += 10f;
-			// give a bonus based on the time taken to complete a lap in comparison with the best Lap 
-			// just the best Lap leads to convergency when the best time is already good
-			// maybe bestLap  divided by 2
-			score += bestLap / ai.timeAlive * 100f;
+			score += 15f;
+            // give a bonus based on the time taken to complete a lap 
+
+			//score += 10 / ai.timeAlive * 10f;
+			score += MathF.Pow(10, 10 / ai.timeAlive);
         }
 		else
 		{
@@ -169,8 +176,9 @@ public class Driving: MonoBehaviour {
 			// if it passed checkpoints
 			if (ai.CheckPointsPassedInOrder > 0)
 			{
-				score += ai.timeAlive / timer;
-			}
+				score += ai.timeAlive / 100;
+
+            }
         }
 
         // if ai passed the checkpoints in the wrong order then penalize the fitness quite heavily
@@ -232,7 +240,7 @@ public class Driving: MonoBehaviour {
 
 	public bool SolutionReached()
 	{
-		if (AgentsThatCompletedTheTrack() > numberOfAgents / 2)
+		if (AgentsThatCompletedTheTrack() > numberOfAgents * 0.75)
 			consecutiveGoodRuns++;
 		else
 			consecutiveGoodRuns = 0;
